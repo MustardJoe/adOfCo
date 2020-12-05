@@ -1045,7 +1045,7 @@ const parseLine = (line) => {
     || (passwordSplit[limits[1] - 1] === checkLetter && passwordSplit[limits[0] - 1] != checkLetter);
 }
 
-// parseLine(dataSplit[971]);
+  parseLine(dataSplit[971]);
 
 let totalGood = 0;
 
