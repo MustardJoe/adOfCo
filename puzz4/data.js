@@ -1118,28 +1118,75 @@ iyr:2029
 hgt:183cm cid:187 byr:2019 ecl:xry iyr:2013 pid:164cm hcl:#18171d eyr:2021
 `;
 
-// let furtherParsedData = [];
-
 const data4Split = sampleData4Raw.split(`
 
 `);
+let validPassportCount = 0;
 
-// .forEach((cur) => cur.split('\n'));
-
-// .forEach((cur) => {
-//   furtherParsedData.push(cur.split('\n'));
-// });
-
-console.log(data4Split, data4Split.length);
-
-// console.log(furtherParsedData);
+// console.log(data4Split, data4Split.length);
 
 const passportChecker = (passport) => {
-  let truthVar = passport.includes('ecl:' && 'iyr:' && 'eyr:' && 'hgt'
-    && 'hcl' && );
+  // let truthVar = passport.includes('ecl:' && 'iyr:' && 'eyr:' && 'hgt:'
+  //   && 'hcl:' && 'byr:' && 'pid:');
 
-  console.log('In PassportChecker, logging truthVar: ', truthVar);
-  return truthVar;
+  let eclCheck = passport.includes('ecl:');
+  let byrCheck = passport.includes('byr:');
+  let iryCheck = passport.includes('iyr:');
+  let eyrCheck = passport.includes('eyr:');
+  let hgtCheck = passport.includes('hgt:');
+  let hclCheck = passport.includes('hcl:');
+  let pidCheck = passport.includes('pid:');
+
+  
+  // console.log(eclCheck, byrCheck, iryCheck, eyrCheck, hgtCheck, hclCheck, pidCheck, 'FINAL TEST: ',
+  // (eclCheck && byrCheck && iryCheck && eyrCheck && hgtCheck && hclCheck && pidCheck));
+
+  if (eclCheck && byrCheck && iryCheck && eyrCheck && hgtCheck && hclCheck && pidCheck) {
+    //run the checks agains the data! => must PARSE DATA FURTHER FIRST
+    //UGLY ASS DATA PARSING LOGIC HERE
+    let justTheData = passport.split(' ');
+    let smackDown = [];
+    let moreParsingOfData = [];
+    let passPortObj = {};
+    justTheData.forEach((cur) => {
+      smackDown.push(cur.split('\n'));
+    });
+    smackDown.forEach((cur) => {
+      moreParsingOfData.push(...cur);
+      // console.log('label', cur);
+    });
+    moreParsingOfData.forEach((cur) => {
+      let curCopy = [...cur].join('');
+      let label = cur.slice(0, 3);
+      console.log('curCopy', curCopy, curCopy.slice(4));
+      passPortObj[cur.slice(0, 3)] = '' + curCopy.slice(4);
+
+      console.log('label', label, 'curCopy', curCopy);
+    })
+
+    console.log('PassPortObj, needed for new checks', passPortObj);
+
+    //new checks go here
+    // let byr2 = () => {
+    //   let hairColor = moreParsingOfData[0].slice()
+    // };
+    // let iyr2 = ();
+    // let eyr2 = ();
+    // let hgt2 = ();
+    // let hcl2 = ();
+    // let ecl2 = ();
+    // let pid2 = ();
+
+  }
 }
 
-passportChecker(data4Split[0]);
+// passportChecker(data4Split[3]);
+
+for(let i = 0; i < data4Split.length; i++) {
+  if(passportChecker(data4Split[i])) {
+    console.log('incrimenting validPassportCount');
+    validPassportCount = validPassportCount + 1;
+  }
+}
+
+console.log(validPassportCount);
