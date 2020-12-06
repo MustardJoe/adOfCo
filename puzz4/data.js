@@ -1118,7 +1118,34 @@ iyr:2029
 hgt:183cm cid:187 byr:2019 ecl:xry iyr:2013 pid:164cm hcl:#18171d eyr:2021
 `;
 
-const data4Split = sampleData4Raw.split(`
+const goodPassports = `pid:087499704 hgt:74in ecl:grn iyr:2012 eyr:2030 byr:1980
+hcl:#623a2f
+
+eyr:2029 ecl:blu cid:129 byr:1989
+iyr:2014 pid:896056539 hcl:#a97842 hgt:165cm
+
+hcl:#888785
+hgt:164cm byr:2001 iyr:2015 cid:88
+pid:545766238 ecl:hzl
+eyr:2022
+
+iyr:2010 hgt:158cm hcl:#b6652a ecl:blu byr:1944 eyr:2021 pid:093154719`;
+
+const badPassports = `eyr:1972 cid:100
+hcl:#18171d ecl:amb hgt:170 pid:186cm iyr:2018 byr:1926
+
+iyr:2019
+hcl:#602927 eyr:1967 hgt:170cm
+ecl:grn pid:012533040 byr:1946
+
+hcl:dab227 iyr:2012
+ecl:brn hgt:182cm pid:021572410 eyr:2020 byr:1992 cid:277
+
+hgt:59cm ecl:zzz
+eyr:2038 hcl:74454a iyr:2023
+pid:3556412378 byr:2007;`
+
+const data4Split = data4Raw.split(`
 
 `);
 let validPassportCount = 0;
@@ -1158,25 +1185,66 @@ const passportChecker = (passport) => {
     moreParsingOfData.forEach((cur) => {
       let curCopy = [...cur].join('');
       let label = cur.slice(0, 3);
-      console.log('curCopy', curCopy, curCopy.slice(4));
+      // console.log('curCopy', curCopy, curCopy.slice(4));
       passPortObj[cur.slice(0, 3)] = '' + curCopy.slice(4);
 
-      console.log('label', label, 'curCopy', curCopy);
+      // console.log('label', label, 'curCopy', curCopy);
     })
 
-    console.log('PassPortObj, needed for new checks', passPortObj);
+    // console.log('PassPortObj, needed for new checks', passPortObj);
 
-    //new checks go here
-    // let byr2 = () => {
-    //   let hairColor = moreParsingOfData[0].slice()
-    // };
-    // let iyr2 = ();
-    // let eyr2 = ();
-    // let hgt2 = ();
-    // let hcl2 = ();
-    // let ecl2 = ();
-    // let pid2 = ();
+    // //new checks go here
+    // console.log('get value from key?', passPortObj['byr'],
+    //   'truthy conditional', typeof passPortObj['byr'] === 'string', typeof Number(passPortObj['byr']));
+    let byr2 = (typeof Number(passPortObj['byr']) === 'number' && Number(passPortObj['byr']) >= 1920
+        && Number(passPortObj['byr']) <= 2002);
 
+    let iyr2 = (typeof Number(passPortObj['iyr']) === 'number' && Number(passPortObj['iyr']) >= 2010
+      && Number(passPortObj['iyr']) <= 2020);
+    let eyr2 = (typeof Number(passPortObj['eyr']) === 'number' && Number(passPortObj['eyr']) >= 2020
+      && Number(passPortObj['eyr']) <= 2030);
+    
+    let hgt2 = () => {
+      let units = passPortObj['hgt'].slice(-2);
+      // console.log('Units of Measurment', units, units === 'cm', units === 'in');
+
+      if (units === 'cm') {
+        return (units === 'cm' && Number(passPortObj['hgt'].slice(0, -2)) >= 150
+        && Number(passPortObj['hgt'].slice(0, -2)) <= 193);
+      } else if (units === 'in') {
+        return (units === 'in' && Number(passPortObj['hgt'].slice(0, -2)) >= 59
+        && Number(passPortObj['hgt'].slice(0, -2)) <= 76);
+      } else {
+        return units === 'unknown';
+      }
+    };
+
+    let hgt2Result = hgt2();
+
+    let hexString = passPortObj['hcl'].slice(1);
+    let decimalVal = parseInt(hexString, 16);
+    let hcl2 =
+   (passPortObj['hcl'].slice(0, 1) === '#' && passPortObj['hcl'].slice(1).length === 6
+      && !isNaN(decimalVal));
+    
+    
+    let ecl2 = 
+      (passPortObj['ecl'] === 'amb' || passPortObj['ecl'] === 'blu' || passPortObj['ecl'] === 'brn'
+      || passPortObj['ecl'] === 'gry' || passPortObj['ecl'] === 'grn' || passPortObj['ecl'] === 'hzl'
+      || passPortObj['ecl'] === 'oth');
+ 
+      
+      console.log('PID check: ', passPortObj['pid'], typeof Number(passPortObj['pid'])
+        && passPortObj['pid'].length === 9);
+    let pid2 = 
+      
+      (typeof Number(passPortObj['pid']) === 'number' && passPortObj['pid'].length === 9);
+ 
+    // pid2();
+
+    console.log(byr2, iyr2, eyr2, hgt2Result, hcl2, ecl2, pid2, 'FINAL TEST', 
+    (byr2 && iyr2 && eyr2 && hgt2Result && hcl2 && ecl2 && pid2))
+    return (byr2 && iyr2 && eyr2 && hgt2Result && hcl2 && ecl2 && pid2);
   }
 }
 
