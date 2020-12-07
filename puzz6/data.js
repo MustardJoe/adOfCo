@@ -2215,7 +2215,7 @@ a
 
 b`;
 
-let data6Split = sampleData6Raw.split(`
+let data6Split = data6Raw.split(`
 
 `);
 data6Split.forEach((group) => {
@@ -2227,27 +2227,41 @@ console.log(peopleGroup);
 
 let totalQuestionQount = 0;
 
-let questionCountArr = {};
+let questionCountObj = {};
+let questionCountArr = [];
 
 const count1Person = (person) => {
   let eachQuestion = person.split('');
   eachQuestion.forEach((question) => {
-    if (questionCountArr.includes(question)) {
-      console.log('already got that one');
+    if (questionCountObj[question]) {
+      questionCountObj[question] = questionCountObj[question] + 1;
     } else {
       questionCountArr.push(question);
+      questionCountObj[question] = 1;
     }
   });
 
-  console.log(questionCountArr);
+  console.log(questionCountObj, questionCountArr);
 }
+
+// count1Person(peopleGroup[0][0]);
 
 const count1Group = (group) => {
   group.forEach((person) => {
     count1Person(person);
   });
-  totalQuestionQount = totalQuestionQount + questionCountArr.length;
+  
+  for(let i = 0; i < questionCountArr.length; i++) {
+    if(questionCountObj[questionCountArr[i]] === group.length) {
+      totalQuestionQount = totalQuestionQount + 1;
+
+    }
+  }
+
+  console.log(questionCountObj, questionCountArr);  
+
   console.log('counting a Group:', totalQuestionQount);
+  questionCountObj = {};
   questionCountArr = [];
 }
 
@@ -2263,4 +2277,4 @@ const countAllQuestions = (theData) => {
 
 countAllQuestions(peopleGroup);
 
-console.log(questionCountArr, 'total question count', totalQuestionQount);
+console.log(questionCountObj, 'total question count', totalQuestionQount);
