@@ -603,13 +603,24 @@ vibrant plum bags contain 5 faded blue bags, 6 dotted black bags.
 faded blue bags contain no other bags.
 dotted black bags contain no other bags.`;
 
+let part2Example = `shiny gold bags contain 2 dark red bags.
+dark red bags contain 2 dark orange bags.
+dark orange bags contain 2 dark yellow bags.
+dark yellow bags contain 2 dark green bags.
+dark green bags contain 2 dark blue bags.
+dark blue bags contain 2 dark violet bags.
+dark violet bags contain no other bags.`;
+
 
 //// some initial input normalization
-// let data7Split = sampleData7Raw.split(`
+let data7Split = sampleData7Raw.split(`
+`);
+
+// let data7Split = part2Example.split(`
 // `);
 
-let data7Split = data7Raw.split(`
-`);
+// let data7Split = data7Raw.split(`
+// `);
 
 let line7Split = [];
 
@@ -619,9 +630,10 @@ let nodeDictionary = {};
 let goldBagCount = 0;
 
 class ColorNode {
-  constructor(value, children, parent) {
+  constructor(value, children, childCount, parent) {
     this.value = value;
     this.children = children;
+    this.childCount = childCount;
     this.parent = parent;
   }
 }
@@ -641,7 +653,6 @@ line7Split.forEach((line, lineIndex) => {
       line7Split[lineIndex].pop();
     }
   })
-  console.log(colorDictionary);
 })
 
 // console.log('line7Split', line7Split, 'colorDictionary', colorDictionary);
@@ -657,18 +668,34 @@ const getColor = (lineItem) => {
   return result;
 }
 
+const getChildCount = (lineItem) => {
+  let returnInt = 0;
+  for(let i = 0; i < lineItem.length; i++) {
+    // console.log('trying', lineItem.slice(i, i + 1), !isNaN(lineItem.slice(i, i + 1)));
+    if(!isNaN(lineItem.slice(i, i + 1)) && lineItem.slice(i, i + 1) != ' ') {
+      // console.log('WINNER', lineItem.slice(i, i + 1));
+      returnInt = lineItem.slice(i, i + 1);
+    }
+  }
+  return returnInt;
+}
+
 const createNewNodeFromLine = line => {
   let nodeChilren = [];
-  line.forEach((lineItem) => {
-    console.log('lineItem', lineItem);
+  let nodeChildCounts = [];
+  line.forEach((lineItem, index) => {
+    // console.log('lineItem', lineItem);
+    getChildCount(lineItem);
     let color = getColor(lineItem);
+    let count = getChildCount(lineItem);
     if(color) {
       nodeChilren.push(color);
     }
+    if(count && index > 0) nodeChildCounts.push(count);
   })
   nodeChilren.shift();
   // console.log('node children', nodeChilren);
-  nodeDictionary[line[0]] = new ColorNode(line[0], nodeChilren); 
+  nodeDictionary[line[0]] = new ColorNode(line[0], nodeChilren, nodeChildCounts); 
 }
 
 // let firstNode = createNewNodeFromLine(line7Split[2]);
@@ -703,10 +730,10 @@ const checkBagContainsGold = (theNode) => {
       // console.log('nothing to do here');
       // return 1 === 0;
     } else {
-      console.log('do we ever hit this?', node.children.includes('shiny gold'));
+      // console.log('do we ever hit this?', node.children.includes('shiny gold'));
       if(node.children.includes('shiny gold')) {
         nodeGoldBagCounter = nodeGoldBagCounter + 1;
-        console.log(nodeGoldBagCounter);
+        // console.log(nodeGoldBagCounter);
       } else {
         node.children.forEach(child => {
           return recursiveChecker(nodeDictionary[child]);
@@ -741,13 +768,59 @@ const checkBagContainsGold = (theNode) => {
 
 // checkBagContainsGold(nodeDictionary['muted yellow']);
 
-colorDictionary.forEach((color) => {
-  // console.log('_________EACH main color', color, nodeDictionary[color]), checkBagContainsGold(nodeDictionary[color]);
-  if(checkBagContainsGold(nodeDictionary[color])) {
-    goldBagCount = goldBagCount + 1;
-    nodeGoldBagCounter = 0;
-  }
-})
+// colorDictionary.forEach((color) => {
+//   // console.log('_________EACH main color', color, nodeDictionary[color]), checkBagContainsGold(nodeDictionary[color]);
+//   if(checkBagContainsGold(nodeDictionary[color])) {
+//     goldBagCount = goldBagCount + 1;
+//     nodeGoldBagCounter = 0;
+//   }
+// })
 
 
 console.log('goldBagCount', goldBagCount);
+
+//////////////////// ............JUST GARBAGE BELOW HERE.... ///////////////////////////////////
+
+const childCounter = (node) => {
+  // console.log('in childCounter', node);
+  if(node && !node.children) return 1;
+  else if(node && node.children) {
+    node.children.forEach((child, index) => {
+      console.log('in child checker, checking for grandchildren',
+        nodeDictionary[child].children,
+        nodeDictionary[child].children.length === 0);
+      if(nodeDictionary[child].children.length > 0) {
+        return childCounter(nodeDictionary[child]);
+        // return childCounter(nodeDictionary[child].children.forEach((grandChild) => {
+        //   console.log('making sure always pass node in', grandChild, 'grandchile?', nodeDictionary[grandChild]);
+        //   return childCounter(nodeDictionary[grandChild].childCount.reduce((a, b) => {
+        //     return parseInt(a)*parseInt(nodeDictionary[child].childCount[index]) + parseInt(b) * parseInt(nodeDictionary[child].childCount[index]);
+        //   }, 0));
+        // }));
+      } else if (nodeDictionary[child].children.length === 0) {
+        console.log('here is a child with no children (no grandchildren)');
+      }
+      else {
+        return node.childCount.reduce((a, b) => {
+          return parseInt(a) + parseInt(b);
+        }, 0)
+      } 
+    });
+  }
+}
+
+childCounter(nodeDictionary[colorDictionary[4]]);
+
+// // console.log(nodeDictionary);
+
+// colorDictionary.forEach(color => {
+//   return childCounter[color];
+// })
+
+////////////////////////// HOPEFULLY END OF GARBAGE ///////////////////////////////
+
+// let bagCount = 0;
+
+// let listToProcess = ['shiny gold'];
+
+// const processList
