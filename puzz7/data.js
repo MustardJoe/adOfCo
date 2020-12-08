@@ -782,34 +782,46 @@ console.log('goldBagCount', goldBagCount);
 //////////////////// ............JUST GARBAGE BELOW HERE.... ///////////////////////////////////
 
 const childCounter = (node) => {
-  // console.log('in childCounter', node);
-  if(node && !node.children) return 1;
-  else if(node && node.children) {
-    node.children.forEach((child, index) => {
-      console.log('in child checker, checking for grandchildren',
-        nodeDictionary[child].children,
-        nodeDictionary[child].children.length === 0);
-      if(nodeDictionary[child].children.length > 0) {
-        return childCounter(nodeDictionary[child]);
-        // return childCounter(nodeDictionary[child].children.forEach((grandChild) => {
-        //   console.log('making sure always pass node in', grandChild, 'grandchile?', nodeDictionary[grandChild]);
-        //   return childCounter(nodeDictionary[grandChild].childCount.reduce((a, b) => {
-        //     return parseInt(a)*parseInt(nodeDictionary[child].childCount[index]) + parseInt(b) * parseInt(nodeDictionary[child].childCount[index]);
-        //   }, 0));
-        // }));
-      } else if (nodeDictionary[child].children.length === 0) {
-        console.log('here is a child with no children (no grandchildren)');
-      }
-      else {
-        return node.childCount.reduce((a, b) => {
-          return parseInt(a) + parseInt(b);
-        }, 0)
-      } 
-    });
+  console.log('in childCounter, checking the node ', node);
+  if(node && node.children.length < 1) return 1;
+  else if(node) {
+    // node.children.forEach((child, index) => {
+    //   console.log('in child checker, checking for grandchildren',
+    //     nodeDictionary[child].children,
+    //     nodeDictionary[child].children.length === 0);
+    //   if(nodeDictionary[child].children.length > 0) {
+    //     return childCounter(nodeDictionary[child]);
+    //     // return childCounter(nodeDictionary[child].children.forEach((grandChild) => {
+    //     //   console.log('making sure always pass node in', grandChild, 'grandchile?', nodeDictionary[grandChild]);
+    //     //   return childCounter(nodeDictionary[grandChild].childCount.reduce((a, b) => {
+    //     //     return parseInt(a)*parseInt(nodeDictionary[child].childCount[index]) + parseInt(b) * parseInt(nodeDictionary[child].childCount[index]);
+    //     //   }, 0));
+    //     // }));
+    //   } else if (nodeDictionary[child].children.length === 0) {
+    //     //return the node times the children? here?
+    //     console.log('here is a child with no children (no grandchildren)', node.childCount.reduce((a, b) => {
+    //       return parseInt(a) + parseInt(b);
+    //     }, 0));
+    //     return node.childCount.reduce((a, b) => {
+
+    //       return parseInt(a) + parseInt(b);
+    //     }, 0);
+
+    //   }
+    //   // else {
+    //   //   return node.childCount.reduce((a, b) => {
+    //   //     return parseInt(a) + parseInt(b);
+    //   //   }, 0)
+    //   // } 
+    // });
+    return node.children.reduce((acc, cur, index) => {
+      console.log(parseInt(node.childCount[index]), childCounter(nodeDictionary[cur]))
+      return acc + parseInt(node.childCount[index]) + 1 + (((parseInt(node.childCount[index]))) * childCounter(nodeDictionary[cur]) /*+ parseInt(node.childCount[index])*/);
+    }, 0)
   }
 }
 
-childCounter(nodeDictionary[colorDictionary[4]]);
+let finalBagCount = childCounter(nodeDictionary[colorDictionary[4]]);
 
 // // console.log(nodeDictionary);
 
@@ -824,3 +836,5 @@ childCounter(nodeDictionary[colorDictionary[4]]);
 // let listToProcess = ['shiny gold'];
 
 // const processList
+
+console.log(finalBagCount);
