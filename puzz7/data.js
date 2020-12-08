@@ -613,11 +613,11 @@ dark violet bags contain no other bags.`;
 
 
 //// some initial input normalization
-let data7Split = sampleData7Raw.split(`
-`);
-
-// let data7Split = part2Example.split(`
+// let data7Split = sampleData7Raw.split(`
 // `);
+
+let data7Split = part2Example.split(`
+`);
 
 // let data7Split = data7Raw.split(`
 // `);
@@ -687,7 +687,7 @@ const createNewNodeFromLine = line => {
     // console.log('lineItem', lineItem);
     getChildCount(lineItem);
     let color = getColor(lineItem);
-    let count = getChildCount(lineItem);
+    let count = parseInt(getChildCount(lineItem));
     if(color) {
       nodeChilren.push(color);
     }
@@ -779,6 +779,14 @@ const checkBagContainsGold = (theNode) => {
 
 console.log('goldBagCount', goldBagCount);
 
+// colorDictionary.forEach(color => {
+//   if(nodeDictionary[color].childCount.length > 0) {
+//     nodeDictionary[color].childCount.forEach(number => {
+//       return number = parseInt(number);
+//     })
+//   }
+// })
+
 //////////////////// ............JUST GARBAGE BELOW HERE.... ///////////////////////////////////
 
 const childCounter = (node) => {
@@ -815,15 +823,15 @@ const childCounter = (node) => {
     //   // } 
     // });
     return node.children.reduce((acc, cur, index) => {
-      console.log(parseInt(node.childCount[index]), childCounter(nodeDictionary[cur]))
-      return acc + parseInt(node.childCount[index]) + 1 + (((parseInt(node.childCount[index]))) * childCounter(nodeDictionary[cur]) /*+ parseInt(node.childCount[index])*/);
+      console.log('acc', acc, 'numb of this kind of bag', parseInt(node.childCount[index]), 'return value from childcounter current node', childCounter(nodeDictionary[cur]), )
+      return acc + parseInt(node.childCount[index]) + ((parseInt(node.childCount[index])) * (childCounter(nodeDictionary[cur]) - 1));
     }, 0)
   }
 }
 
-let finalBagCount = childCounter(nodeDictionary[colorDictionary[4]]);
+let finalBagCount = childCounter(nodeDictionary[colorDictionary[0]]);
 
-// // console.log(nodeDictionary);
+// console.log(nodeDictionary);
 
 // colorDictionary.forEach(color => {
 //   return childCounter[color];
