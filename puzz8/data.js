@@ -651,7 +651,7 @@ acc +1
 jmp -4
 acc +6`;
 
-let data8Split = sampleData8Raw.split('\n');
+let data8Split = data8Raw.split('\n');
 let data8Obj = {};
 let lastAccu = 0;
 let accu = 0;
@@ -662,42 +662,47 @@ data8Split.forEach((line, index) => {
     value: line,
     indexInArr: index,
     instruction: line.split(' ')[0],
-    instructVal: line.split(' ')[1],
+    instructVal: parseInt(line.split(' ')[1]),
     instructCount: 0,
   };
 });
+instructionQueue.push(data8Obj[0]);
 
 // console.log(data8Obj);
 
 const performInstruct = {
   jump(line) {
-    console.log('jump', line);
+    console.log('jump', line.value, line.indexInArr + line.instructVal);
     line.instructCount = line.instructCount + 1;
-    instructionQueue.push(data8Obj[line.indexInArr + line.instructVal]);
+    return instructionQueue.push(data8Obj[parseInt(line.indexInArr) + parseInt(line.instructVal)]);
   },
   accu(line) {
-    console.log('accu', line);
+    console.log('accu', line.value);
     lastAccu = accu;
     accu = accu + line.instructVal;
     line.instructCount = line.instructCount + 1;
     console.log('inside ACCU', data8Obj[line.indexInArr + 1]);
-    instructionQueue.push(data8Obj[line.indexInArr + 1]);
+    return instructionQueue.push(data8Obj[line.indexInArr + 1]);
   },
   noop(line) {
-    console.log('noop', line);
+    console.log('noop', line.value);
     line.instructCount = line.instructCount + 1;
-    instructionQueue.push(data8Obj[line.indexInArr + 1]);
+    return instructionQueue.push(data8Obj[line.indexInArr + 1]);
   }
 }
 
 const evalInstruct = (line) => {
+  console.log('we should have an instruction here', instructionQueue);
   instructionQueue.shift();
-  console.log('inside Eval Instruct, logging line', line);
+  console.log(instructionQueue);
+  
+
+  console.log('inside Eval Instruct, logging line', line.value);
   if(line.instructCount >= 1) {
     console.log('hit instruction we already ran. here is Accu:', accu, lastAccu);
     return accu;
   } else {
-    console.log('line.instruction', line);
+    console.log('line.instruction', line.value);
     if(!line) {
       return
     }
@@ -711,13 +716,13 @@ const evalInstruct = (line) => {
       console.log('we shouldnt ever get here, soomething brooookkee', line);
     }
   }
-  return accu;
+  return line.instructCount = line.instructCount + 1;
 }
 
-evalInstruct(data8Obj[0]);
-// console.log('i want job and no more hurt', instructionQueue.length, instructionQueue.length > 0);
+// evalInstruct(data8Obj[0]);
+console.log('i want job and no more hurt', instructionQueue.length, instructionQueue.length > 0, instructionQueue[0], 'obj');
 while(instructionQueue.length > 0) {
   console.log('what is next insrtuction?', instructionQueue);
-  evalInstruct(data8Obj[instructionQueue['0']]);
+  evalInstruct(instructionQueue[0]);
   console.log('after', instructionQueue);
 }
